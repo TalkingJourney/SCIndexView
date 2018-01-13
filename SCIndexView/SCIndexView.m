@@ -185,7 +185,9 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
     if (!self.indicator.hidden || self.currentSection < 0 || self.currentSection >= self.subTextLayers.count) return;
     
     CATextLayer *textLayer = self.subTextLayers[self.currentSection];
-    self.indicator.center = CGPointMake(self.bounds.size.width - self.indicator.bounds.size.width / 2 - self.configuration.indicatorRightMargin, textLayer.position.y);
+    if (self.configuration.indexViewStyle == SCIndexViewStyleDefault) {
+        self.indicator.center = CGPointMake(self.bounds.size.width - self.indicator.bounds.size.width / 2 - self.configuration.indicatorRightMargin, textLayer.position.y);
+    }
     self.indicator.text = textLayer.string;
     
     if (animated) {
@@ -346,20 +348,36 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
 {
     if (!_indicator) {
         _indicator = [UILabel new];
-        _indicator.backgroundColor = self.configuration.indicatorBackgroundColor;
+        _indicator.layer.backgroundColor = self.configuration.indicatorBackgroundColor.CGColor;
         _indicator.textColor = self.configuration.indicatorTextColor;
         _indicator.font = self.configuration.indicatorTextFont;
         _indicator.textAlignment = NSTextAlignmentCenter;
         _indicator.hidden = YES;
         
-        CGFloat indicatorRadius = self.configuration.indicatorHeight / 2;
-        CGFloat sinPI_4_Radius = sin(M_PI_4) * indicatorRadius;
-        _indicator.bounds = CGRectMake(0, 0, (4 * sinPI_4_Radius), 2 * indicatorRadius);
-        
-        CAShapeLayer *maskLayer = [CAShapeLayer layer];
-        maskLayer.path = [self drawIndicatorPath].CGPath;
-        _indicator.layer.mask = maskLayer;
-        
+        switch (self.configuration.indexViewStyle) {
+            case SCIndexViewStyleDefault:
+            {
+                CGFloat indicatorRadius = self.configuration.indicatorHeight / 2;
+                CGFloat sinPI_4_Radius = sin(M_PI_4) * indicatorRadius;
+                _indicator.bounds = CGRectMake(0, 0, (4 * sinPI_4_Radius), 2 * indicatorRadius);
+                
+                CAShapeLayer *maskLayer = [CAShapeLayer layer];
+                maskLayer.path = [self drawIndicatorPath].CGPath;
+                _indicator.layer.mask = maskLayer;
+            }
+                break;
+                
+            case SCIndexViewStyleCenterToast:
+            {
+                _indicator.bounds = CGRectMake(0, 0, self.configuration.indicatorHeight, self.configuration.indicatorHeight);
+                _indicator.center = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
+                _indicator.layer.cornerRadius = self.configuration.indicatorCornerRadius;
+            }
+                break;
+                
+            default:
+                break;
+        }
     }
     return _indicator;
 }
