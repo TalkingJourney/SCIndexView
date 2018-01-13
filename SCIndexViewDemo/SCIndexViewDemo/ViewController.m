@@ -1,102 +1,71 @@
 
 #import "ViewController.h"
-#import "YYModel.h"
-#import "SectionItem.h"
-#import "SCIndexView.h"
+#import "SCIndexViewController.h"
 
-@interface ViewController () <UITableViewDataSource, SCIndexViewDelegate>
-
-@property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) SCIndexView *indexView;
-
-@property (nonatomic, copy) NSArray<SectionItem *> *tableViewDataSource;
-@property (nonatomic, assign) BOOL translucent;
+@interface ViewController ()
 
 @end
 
 @implementation ViewController
 
-#pragma mark - Life Cycle
-
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    
-    self.translucent = YES;
-    
-    [self.view addSubview:self.tableView];
-    [self.view addSubview:self.indexView];
-    
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Indexes" ofType:@"plist"];
-        NSArray<SectionItem *> *tableViewDataSource = [NSArray yy_modelArrayWithClass:SectionItem.class json:[NSArray arrayWithContentsOfFile:plistPath]];
-        
-        NSMutableArray *indexViewDataSource = [NSMutableArray array];
-        for (SectionItem *item in tableViewDataSource) {
-            [indexViewDataSource addObject:item.title];
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.title = @"选择索引类型";
+}
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    SCIndexViewController *indexViewController = [SCIndexViewController new];
+    switch (indexPath.row) {
+        case 0:
+        {
+            indexViewController.indexViewStyle = SCIndexViewStyleDefault;
         }
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            self.tableViewDataSource = tableViewDataSource.copy;
-            [self.tableView reloadData];
+            break;
             
-            self.indexView.dataSource = indexViewDataSource.copy;
-        });
-    });
+        case 1:
+        {
+            indexViewController.indexViewStyle = SCIndexViewStyleCenterToast;
+        }
+            break;
+            
+        default:
+            break;
+    }
+    [self.navigationController pushViewController:indexViewController animated:YES];
 }
 
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return self.tableViewDataSource.count;
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    SectionItem *sectionItem = self.tableViewDataSource[section];
-    return sectionItem.items.count;
+    return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-    SectionItem *sectionItem = self.tableViewDataSource[indexPath.section];
-    cell.textLabel.text = sectionItem.items[indexPath.row];;
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    switch (indexPath.row) {
+        case 0:
+        {
+            cell.textLabel.text = @"指向点类型";
+        }
+            break;
+            
+        case 1:
+        {
+            cell.textLabel.text = @"中心提示弹层";
+        }
+            break;
+            
+        default:
+            break;
+    }
     return cell;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    SectionItem *sectionItem = self.tableViewDataSource[section];
-    return sectionItem.title;
-}
-
-#pragma mark - SCIndexViewDelegate
-
-- (void)indexView:(SCIndexView *)indexView didSelectAtIndex:(NSUInteger)index
-{
-    
-}
-
-#pragma mark - Getter and Setter
-
-- (UITableView *)tableView
-{
-    if (!_tableView) {
-        CGFloat height = self.translucent ? 0 : 64;
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, height, self.view.bounds.size.width, self.view.bounds.size.height - height) style:UITableViewStylePlain];
-        _tableView.dataSource = self;
-        [_tableView registerClass:UITableViewCell.class forCellReuseIdentifier:@"cell"];
-    }
-    return _tableView;
-}
-
-- (SCIndexView *)indexView
-{
-    if (!_indexView) {
-        _indexView = [[SCIndexView alloc] initWithTableView:self.tableView configuration:[SCIndexViewConfiguration configuration]];
-        _indexView.translucentForTableViewInNavigationBar = self.translucent;
-        _indexView.delegate = self;
-    }
-    return _indexView;
-}
 @end

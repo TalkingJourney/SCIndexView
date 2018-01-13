@@ -19,6 +19,7 @@
 		1A3B56772009F0B40073C98F /* SectionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B56742009F0B40073C98F /* SectionItem.m */; };
 		1A3B567E2009F2D30073C98F /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B567B2009F2D30073C98F /* NSObject+YYModel.m */; };
 		1A3B567F2009F2D30073C98F /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B567C2009F2D30073C98F /* YYClassInfo.m */; };
+		B874C548200A53CB0040DA53 /* SCIndexViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B874C547200A53CB0040DA53 /* SCIndexViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,8 @@
 		1A3B567B2009F2D30073C98F /* NSObject+YYModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YYModel.m"; sourceTree = "<group>"; };
 		1A3B567C2009F2D30073C98F /* YYClassInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYClassInfo.m; sourceTree = "<group>"; };
 		1A3B567D2009F2D30073C98F /* NSObject+YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YYModel.h"; sourceTree = "<group>"; };
+		B874C546200A53CB0040DA53 /* SCIndexViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCIndexViewController.h; sourceTree = "<group>"; };
+		B874C547200A53CB0040DA53 /* SCIndexViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCIndexViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +88,8 @@
 				1A3B56422009EE370073C98F /* AppDelegate.m */,
 				1A3B56442009EE370073C98F /* ViewController.h */,
 				1A3B56452009EE370073C98F /* ViewController.m */,
+				B874C546200A53CB0040DA53 /* SCIndexViewController.h */,
+				B874C547200A53CB0040DA53 /* SCIndexViewController.m */,
 				1A3B56472009EE370073C98F /* Main.storyboard */,
 				1A3B564A2009EE370073C98F /* Assets.xcassets */,
 				1A3B564C2009EE370073C98F /* LaunchScreen.storyboard */,
@@ -197,6 +202,7 @@
 				1A3B567F2009F2D30073C98F /* YYClassInfo.m in Sources */,
 				1A3B56712009F01F0073C98F /* SCIndexViewConfiguration.m in Sources */,
 				1A3B56432009EE370073C98F /* AppDelegate.m in Sources */,
+				B874C548200A53CB0040DA53 /* SCIndexViewController.m in Sources */,
 				1A3B56722009F01F0073C98F /* SCIndexView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
