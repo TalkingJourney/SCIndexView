@@ -16,6 +16,11 @@ static inline UIColor *SCGetColor(CGFloat red, CGFloat green, CGFloat blue, CGFl
 
 @synthesize indexViewStyle = _indexViewStyle;
 
++ (instancetype)configuration
+{
+    return [self configurationWithIndexViewStyle:SCIndexViewStyleDefault];
+}
+
 + (instancetype)configurationWithIndexViewStyle:(SCIndexViewStyle)indexViewStyle
 {
     UIColor *indicatorBackgroundColor, *indicatorTextColor;

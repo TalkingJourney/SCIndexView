@@ -25,7 +25,10 @@ typedef NS_ENUM(NSUInteger, SCIndexViewStyle) {
 @property (nonatomic, assign) CGFloat indexItemRightMargin;                 // 索引元素距离右边屏幕距离
 @property (nonatomic, assign) CGFloat indexItemsSpace;                      // 索引元素之间间隔距离
 
++ (instancetype)configuration;
+
 + (instancetype)configurationWithIndexViewStyle:(SCIndexViewStyle)indexViewStyle;
+
 + (instancetype)configurationWithIndexViewStyle:(SCIndexViewStyle)indexViewStyle
                        indicatorBackgroundColor:(UIColor *)indicatorBackgroundColor
                              indicatorTextColor:(UIColor *)indicatorTextColor
