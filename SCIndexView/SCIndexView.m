@@ -133,12 +133,22 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
 
 - (void)onActionWithScroll
 {
+    if (self.isTouchingIndexView) {
+        // 当滑动tableView视图时，另一手指滑动索引视图，让tableView滑动失效
+        self.tableView.panGestureRecognizer.enabled = NO;
+        self.tableView.panGestureRecognizer.enabled = YES;
+        
+        return; // 当滑动索引视图时，tableView滚动不能影响索引位置
+    }
+    
+    // 可能tableView的contentOffset变化，却没有scroll，此时不应该影响索引位置
+    BOOL isScrolling = self.tableView.isDragging || self.tableView.isDecelerating;
+    if (!isScrolling) return;
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(sectionOfIndexView:tableViewDidScroll:)]) {
         self.currentSection = [self.delegate sectionOfIndexView:self tableViewDidScroll:self.tableView];
         return;
     }
-    
-    if (self.isTouchingIndexView) return;
     
     NSIndexPath *needIndexPath;
     if (!self.translucentForTableViewInNavigationBar) {
@@ -246,6 +256,9 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {
+    // 当滑动索引视图时，防止其他手指去触发事件
+    if (self.touchingIndexView) return YES;
+    
     CATextLayer *firstTextLayer = self.subTextLayers.firstObject;
     if (!firstTextLayer) return NO;
     CATextLayer *lastTextLayer = self.subTextLayers.lastObject;
