@@ -33,6 +33,7 @@
         default:
             break;
     }
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(onActionWithRightBarButton)];
     
     self.translucent = YES;
     
@@ -95,6 +96,16 @@
 - (void)indexView:(SCIndexView *)indexView didSelectAtIndex:(NSUInteger)index
 {
     
+}
+
+#pragma mark - Event Response
+
+- (void)onActionWithRightBarButton
+{
+    UIViewController *viewController = [UIViewController new];
+    viewController.view.backgroundColor = [UIColor whiteColor];
+    viewController.title = @"分享";
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 #pragma mark - Getter and Setter
