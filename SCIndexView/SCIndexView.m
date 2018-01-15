@@ -82,11 +82,11 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
     
     CGFloat space = self.configuration.indexItemHeight + self.configuration.indexItemsSpace / 2;
     CGFloat margin = (self.bounds.size.height - space * self.dataSource.count) / 2;
+    
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
     for (int i = 0; i < self.dataSource.count; i++) {
         CATextLayer *textLayer = self.subTextLayers[i];
-        
-        [CATransaction begin];
-        [CATransaction setDisableActions:YES];
         textLayer.frame = CGRectMake(self.bounds.size.width - self.configuration.indexItemRightMargin - self.configuration.indexItemHeight, SCGetTextLayerCenterY(i, margin, space), self.configuration.indexItemHeight, self.configuration.indexItemHeight);
         textLayer.string = self.dataSource[i];
         textLayer.fontSize = self.configuration.indexItemHeight * 0.8;
@@ -95,8 +95,8 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
         textLayer.contentsScale = UIScreen.mainScreen.scale;
         textLayer.backgroundColor = self.configuration.indexItemBackgroundColor.CGColor;
         textLayer.foregroundColor = self.configuration.indexItemTextColor.CGColor;
-        [CATransaction commit];
     }
+    [CATransaction commit];
     
     if (self.subTextLayers.count == 0) {
         self.currentSection = NSUIntegerMax;
@@ -105,6 +105,31 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
     } else {
         self.currentSection = self.subTextLayers.count - 1;
     }
+}
+
+- (void)configCurrentSection
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(sectionOfIndexView:tableViewDidScroll:)]) {
+        self.currentSection = [self.delegate sectionOfIndexView:self tableViewDidScroll:self.tableView];
+        return;
+    }
+    
+    NSIndexPath *needIndexPath;
+    if (!self.translucentForTableViewInNavigationBar) {
+        needIndexPath = self.tableView.indexPathsForVisibleRows.firstObject;
+    } else {
+        CGFloat insetHeight = UIApplication.sharedApplication.statusBarFrame.size.height + 44;
+        for (UITableViewCell *cell in self.tableView.visibleCells) {
+            CGRect frame = [cell.superview convertRect:cell.frame toView:UIApplication.sharedApplication.delegate.window];
+            if (frame.origin.y + frame.size.height >= insetHeight) {
+                needIndexPath = [self.tableView indexPathForCell:cell];
+                break;
+            }
+        }
+    }
+    
+    if (!needIndexPath) return;
+    self.currentSection = needIndexPath.section;
 }
 
 #pragma mark - KVO
@@ -116,6 +141,17 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
     if ([keyPath isEqualToString:kSCFrameStringFromSelector]) {
         CGRect frame = [change[NSKeyValueChangeNewKey] CGRectValue];
         self.frame = frame;
+        
+        CGFloat space = self.configuration.indexItemHeight + self.configuration.indexItemsSpace / 2;
+        CGFloat margin = (self.bounds.size.height - space * self.dataSource.count) / 2;
+        
+        [CATransaction begin];
+        [CATransaction setDisableActions:YES];
+        for (int i = 0; i < self.dataSource.count; i++) {
+            CATextLayer *textLayer = self.subTextLayers[i];
+            textLayer.frame = CGRectMake(self.bounds.size.width - self.configuration.indexItemRightMargin - self.configuration.indexItemHeight, SCGetTextLayerCenterY(i, margin, space), self.configuration.indexItemHeight, self.configuration.indexItemHeight);
+        }
+        [CATransaction commit];
     } else if ([keyPath isEqualToString:kSCContentOffsetStringFromSelector]) {
         [self onActionWithScroll];
     }
@@ -145,27 +181,7 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
     BOOL isScrolling = self.tableView.isDragging || self.tableView.isDecelerating;
     if (!isScrolling) return;
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(sectionOfIndexView:tableViewDidScroll:)]) {
-        self.currentSection = [self.delegate sectionOfIndexView:self tableViewDidScroll:self.tableView];
-        return;
-    }
-    
-    NSIndexPath *needIndexPath;
-    if (!self.translucentForTableViewInNavigationBar) {
-        needIndexPath = self.tableView.indexPathsForVisibleRows.firstObject;
-    } else {
-        CGFloat insetHeight = UIApplication.sharedApplication.statusBarFrame.size.height + 44;
-        for (UITableViewCell *cell in self.tableView.visibleCells) {
-            CGRect frame = [cell.superview convertRect:cell.frame toView:UIApplication.sharedApplication.delegate.window];
-            if (frame.origin.y + frame.size.height >= insetHeight) {
-                needIndexPath = [self.tableView indexPathForCell:cell];
-                break;
-            }
-        }
-    }
-    
-    if (!needIndexPath) return;
-    self.currentSection = needIndexPath.section;
+    [self configCurrentSection];
 }
 
 #pragma mark - Display
@@ -337,7 +353,9 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
     if (_dataSource == dataSource) return;
     
     _dataSource = dataSource.copy;
+    
     [self configSubLayersAndSubviews];
+    [self configCurrentSection];
 }
 
 - (void)setCurrentSection:(NSInteger)currentSection
