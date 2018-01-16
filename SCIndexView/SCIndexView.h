@@ -37,7 +37,7 @@
 // 当前索引位置
 @property (nonatomic, assign) NSInteger currentSection;
 
-// tableView在shangNavigationBar上是否半透明
+// tableView在NavigationBar上是否半透明
 @property (nonatomic, assign) BOOL translucentForTableViewInNavigationBar;
 
 // 索引视图的配置
