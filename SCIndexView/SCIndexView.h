@@ -29,7 +29,7 @@
 
 @interface SCIndexView : UIControl
 
-@property (nonatomic, strong) id<SCIndexViewDelegate> delegate;
+@property (nonatomic, weak) id<SCIndexViewDelegate> delegate;
 
 // 索引视图数据源
 @property (nonatomic, copy) NSArray<NSString *> *dataSource;
