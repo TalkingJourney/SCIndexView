@@ -11,13 +11,17 @@
 
 @implementation UITableView (SCIndexView)
 
-#pragma mark - Life Cycle
+#pragma mark - Swizzle Method
 
 + (void)load
 {
+    [self swizzledSelector:@selector(SCIndexView_didMoveToSuperview) originalSelector:@selector(didMoveToSuperview)];
+    [self swizzledSelector:@selector(SCIndexView_removeFromSuperview) originalSelector:@selector(removeFromSuperview)];
+}
+
++ (void)swizzledSelector:(SEL)swizzledSelector originalSelector:(SEL)originalSelector
+{
     Class class = [self class];
-    SEL originalSelector = @selector(didMoveToSuperview);
-    SEL swizzledSelector = @selector(SCIndexView_didMoveToSuperview);
     Method originalMethod = class_getInstanceMethod(class, originalSelector);
     Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
     BOOL didAddMethod =
@@ -35,12 +39,22 @@
     }
 }
 
+#pragma Add and Remove View
+
 - (void)SCIndexView_didMoveToSuperview
 {
     [self SCIndexView_didMoveToSuperview];
     if (self.superview && self.sc_indexView) {
         [self.superview addSubview:self.sc_indexView];
     }
+}
+
+- (void)SCIndexView_removeFromSuperview
+{
+    if (self.sc_indexView) {
+        [self.sc_indexView removeFromSuperview];
+    }
+    [self SCIndexView_removeFromSuperview];
 }
 
 #pragma mark - SCIndexViewDelegate
