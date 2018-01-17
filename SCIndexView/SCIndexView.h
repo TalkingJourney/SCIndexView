@@ -17,7 +17,8 @@
 - (void)indexView:(SCIndexView *)indexView didSelectAtSection:(NSUInteger)section;
 
 /**
- 当滑动tableView时，索引位置改变，你需要自己返回索引位置时，实现此方法
+ 当滑动tableView时，索引位置改变，你需要自己返回索引位置时，实现此方法。
+ 不实现此方法，或者方法的返回值为 SCIndexViewInvalidSection 时，索引位置将由控件内部自己计算。
 
  @param indexView 索引视图
  @param tableView 列表视图

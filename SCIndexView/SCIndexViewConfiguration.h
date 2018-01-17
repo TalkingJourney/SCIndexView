@@ -1,6 +1,8 @@
 
 #import <UIKit/UIKit.h>
 
+extern const NSUInteger SCIndexViewInvalidSection;
+
 typedef NS_ENUM(NSUInteger, SCIndexViewStyle) {
     SCIndexViewStyleDefault = 0,    // 指向点
     SCIndexViewStyleCenterToast,    // 中心提示弹层

@@ -110,8 +110,11 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
 - (void)configCurrentSection
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(sectionOfIndexView:tableViewDidScroll:)]) {
-        self.currentSection = [self.delegate sectionOfIndexView:self tableViewDidScroll:self.tableView];
-        return;
+        NSUInteger currentSection = [self.delegate sectionOfIndexView:self tableViewDidScroll:self.tableView];
+        if (currentSection != SCIndexViewInvalidSection) {
+            self.currentSection = currentSection;
+            return;
+        }
     }
     
     NSIndexPath *needIndexPath;
