@@ -204,7 +204,6 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
     [bezierPath addArcWithCenter:centerPoint radius:indicatorRadius startAngle:-M_PI_4 endAngle:M_PI_4 clockwise:NO];
     [bezierPath addLineToPoint:trianglePoint];
     [bezierPath addLineToPoint:startPoint];
-    [bezierPath stroke];
     [bezierPath closePath];
     return bezierPath;
 }
