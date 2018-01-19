@@ -44,6 +44,7 @@
 // 索引视图的配置
 @property (nonatomic, strong, readonly) SCIndexViewConfiguration *configuration;
 
+// SCIndexView 会对 tableView 进行 strong 引用，请注意，防止“循环引用”
 - (instancetype)initWithTableView:(UITableView *)tableView configuration:(SCIndexViewConfiguration *)configuration;
 
 @end

@@ -14,22 +14,9 @@ toast效果图：
 
 # 使用方法
 可以通过CocoaPods导入，支持iOS7及以上。
+
 pod 'SCIndexView'
 
-### 1.x版本
-1. 创建SCIndexViewConfiguration对象，这个对象用来控制索引的UI样式；
-2. 创建SCIndexView对象，这个对象是索引视图本身，初始化方法必须传入UITableView列表，和SCIndexViewConfiguration对象；
-3. 将SCIndexView索引视图添加到UITableView列表视图的父视图之中，再设置索引视图的数据源。
-
-```
-SCIndexViewConfiguration *indexViewConfiguration = [SCIndexViewConfiguration configuration];
-SCIndexView *indexView = [[SCIndexView alloc] initWithTableView:self.tableView configuration:indexViewConfiguration];
-indexView.translucentForTableViewInNavigationBar = self.translucent;
-[self.view addSubview:indexView];
-indexView.dataSource = indexViewDataSource;
-```
-
-### 2.x版本
 1. 创建SCIndexViewConfiguration对象，这个对象用来控制索引的UI样式；
 2. 设置UITableView对象的 sc_translucentForTableViewInNavigationBar 和 sc_indexViewConfiguration；
 3. 再设置UITableView对象的索引数据源。

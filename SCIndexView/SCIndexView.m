@@ -27,7 +27,7 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
 
 @property (nonatomic, strong) NSMutableArray<CATextLayer *> *subTextLayers;
 @property (nonatomic, strong) UILabel *indicator;
-@property (nonatomic, weak) UITableView *tableView;
+@property (nonatomic, strong) UITableView *tableView;
 
 // tableView是否实现cellHeight的代理方法
 @property (nonatomic, assign) BOOL tableViewHasCellHeightMethod;

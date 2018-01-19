@@ -3,6 +3,14 @@
 #import <objc/runtime.h>
 #import "SCIndexView.h"
 
+@interface SCWeakProxy : NSObject
+
+@property (nonatomic, weak) SCIndexView *indexView;
+
+@end
+@implementation SCWeakProxy
+@end
+
 @interface UITableView () <SCIndexViewDelegate>
 
 @property (nonatomic, strong) SCIndexView *sc_indexView;
@@ -44,8 +52,14 @@
 - (void)SCIndexView_didMoveToSuperview
 {
     [self SCIndexView_didMoveToSuperview];
-    if (self.superview && self.sc_indexView) {
-        [self.superview addSubview:self.sc_indexView];
+    if (self.sc_indexViewDataSource.count && !self.sc_indexView && self.superview) {
+        SCIndexView *indexView = [[SCIndexView alloc] initWithTableView:self configuration:self.sc_indexViewConfiguration];
+        indexView.translucentForTableViewInNavigationBar = self.sc_translucentForTableViewInNavigationBar;
+        indexView.delegate = self;
+        indexView.dataSource = self.sc_indexViewDataSource;
+        [self.superview addSubview:indexView];
+        
+        self.sc_indexView = indexView;
     }
 }
 
@@ -53,6 +67,7 @@
 {
     if (self.sc_indexView) {
         [self.sc_indexView removeFromSuperview];
+        self.sc_indexView = nil;
     }
     [self SCIndexView_removeFromSuperview];
 }
@@ -79,14 +94,17 @@
 
 - (SCIndexView *)sc_indexView
 {
-    return objc_getAssociatedObject(self, @selector(sc_indexView));
+    SCWeakProxy *weakProxy = objc_getAssociatedObject(self, @selector(sc_indexView));
+    return weakProxy.indexView;
 }
 
 - (void)setSc_indexView:(SCIndexView *)sc_indexView
 {
     if (self.sc_indexView == sc_indexView) return;
     
-    objc_setAssociatedObject(self, @selector(sc_indexView), sc_indexView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    SCWeakProxy *weakProxy = [SCWeakProxy new];
+    weakProxy.indexView = sc_indexView;
+    objc_setAssociatedObject(self, @selector(sc_indexView), weakProxy, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (SCIndexViewConfiguration *)sc_indexViewConfiguration
@@ -128,6 +146,7 @@
     if (self.sc_translucentForTableViewInNavigationBar == sc_translucentForTableViewInNavigationBar) return;
     
     objc_setAssociatedObject(self, @selector(sc_translucentForTableViewInNavigationBar), @(sc_translucentForTableViewInNavigationBar), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    self.sc_indexView.translucentForTableViewInNavigationBar = sc_translucentForTableViewInNavigationBar;
 }
 
 - (NSArray<NSString *> *)sc_indexViewDataSource
@@ -146,13 +165,12 @@
         return;
     }
     
-    if (!self.sc_indexView) {
+    if (!self.sc_indexView && self.superview) {
         SCIndexView *indexView = [[SCIndexView alloc] initWithTableView:self configuration:self.sc_indexViewConfiguration];
         indexView.translucentForTableViewInNavigationBar = self.sc_translucentForTableViewInNavigationBar;
         indexView.delegate = self;
-        if (self.superview) {
-            [self.superview addSubview:indexView];
-        }
+        [self.superview addSubview:indexView];
+
         self.sc_indexView = indexView;
     }
     
