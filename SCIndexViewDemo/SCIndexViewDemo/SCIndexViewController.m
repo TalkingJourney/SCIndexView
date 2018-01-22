@@ -93,7 +93,7 @@
 
 #pragma mark - SCIndexViewDelegate
 
-- (void)indexView:(SCIndexView *)indexView didSelectAtIndex:(NSUInteger)index
+- (void)indexView:(SCIndexView *)indexView didSelectAtSection:(NSUInteger)section
 {
     
 }
