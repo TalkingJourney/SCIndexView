@@ -34,6 +34,9 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
 // 触摸索引视图
 @property (nonatomic, assign, getter=isTouchingIndexView) BOOL touchingIndexView;
 
+/** 触感反馈 */
+@property (nonatomic, strong) UIImpactFeedbackGenerator *generator NS_AVAILABLE_IOS(10_0);
+
 @end
 
 @implementation SCIndexView
@@ -168,6 +171,13 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:self.currentSection];
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    
+    if (self.isTouchingIndexView) {
+        if (@available(iOS 10.0, *)) {
+            [self.generator prepare];
+            [self.generator impactOccurred];
+        }
+    }
 }
 
 - (void)onActionWithScroll
@@ -415,4 +425,11 @@ static inline NSInteger SCSectionOfTextLayerInY(CGFloat y, CGFloat margin, CGFlo
     return _indicator;
 }
 
+- (UIImpactFeedbackGenerator *)generator {
+    if (!_generator) {
+        _generator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight];
+    }
+    return _generator;
+}
+    
 @end
