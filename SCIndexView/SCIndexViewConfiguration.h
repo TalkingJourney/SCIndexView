@@ -10,7 +10,7 @@ typedef NS_ENUM(NSUInteger, SCIndexViewStyle) {
 
 @interface SCIndexViewConfiguration : NSObject
 
-@property (nonatomic, assign, readonly) SCIndexViewStyle indexViewStyle;    // 索引元素之间间隔距离
+@property (nonatomic, assign, readonly) SCIndexViewStyle indexViewStyle;    // 索引提示风格
 
 @property (nonatomic, strong) UIColor *indicatorBackgroundColor;            // 指示器背景颜色
 @property (nonatomic, strong) UIColor *indicatorTextColor;                  // 指示器文字颜色
