@@ -2,12 +2,11 @@
 #import "SCIndexViewController.h"
 #import "YYModel.h"
 #import "SectionItem.h"
-#import "SCIndexView.h"
+#import "UITableView+SCIndexView.h"
 
-@interface SCIndexViewController () <UITableViewDataSource, UITableViewDelegate, SCIndexViewDelegate>
+@interface SCIndexViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) SCIndexView *indexView;
 
 @property (nonatomic, copy) NSArray<SectionItem *> *tableViewDataSource;
 @property (nonatomic, assign) BOOL translucent;
@@ -23,13 +22,13 @@
     self.view.backgroundColor = [UIColor whiteColor];
     switch (self.indexViewStyle) {
         case SCIndexViewStyleDefault:
-            self.title = @"指向点类型 V1.x";
+            self.title = @"指向点类型";
             break;
-            
+
         case SCIndexViewStyleCenterToast:
-            self.title = @"中心提示弹层 V1.x";
+            self.title = @"中心提示弹层";
             break;
-            
+
         default:
             break;
     }
@@ -38,7 +37,6 @@
     self.translucent = YES;
     
     [self.view addSubview:self.tableView];
-    [self.view addSubview:self.indexView];
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Indexes" ofType:@"plist"];
@@ -52,7 +50,10 @@
             self.tableViewDataSource = tableViewDataSource.copy;
             [self.tableView reloadData];
             
-            self.indexView.dataSource = indexViewDataSource.copy;
+            if (self.hasSearch) {
+                [indexViewDataSource insertObject:UITableViewIndexSearch atIndex:0];
+            }
+            self.tableView.sc_indexViewDataSource = indexViewDataSource.copy;
         });
     });
 }
@@ -91,13 +92,6 @@
     return sectionItem.title;
 }
 
-#pragma mark - SCIndexViewDelegate
-
-- (void)indexView:(SCIndexView *)indexView didSelectAtSection:(NSUInteger)section
-{
-    
-}
-
 #pragma mark - Event Response
 
 - (void)onActionWithRightBarButton
@@ -118,18 +112,16 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         [_tableView registerClass:UITableViewCell.class forCellReuseIdentifier:@"cell"];
+        
+        if (self.hasSearch) {
+            self.tableView.tableHeaderView = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 60)];
+        }
+        
+        SCIndexViewConfiguration *configuration = [SCIndexViewConfiguration configurationWithIndexViewStyle:self.indexViewStyle];
+        _tableView.sc_indexViewConfiguration = configuration;
+        _tableView.sc_translucentForTableViewInNavigationBar = self.translucent;
     }
     return _tableView;
-}
-
-- (SCIndexView *)indexView
-{
-    if (!_indexView) {
-        _indexView = [[SCIndexView alloc] initWithTableView:self.tableView configuration:[SCIndexViewConfiguration configurationWithIndexViewStyle:self.indexViewStyle]];
-        _indexView.translucentForTableViewInNavigationBar = self.translucent;
-        _indexView.delegate = self;
-    }
-    return _indexView;
 }
 
 @end

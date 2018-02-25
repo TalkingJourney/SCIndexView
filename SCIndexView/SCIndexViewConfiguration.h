@@ -2,6 +2,7 @@
 #import <UIKit/UIKit.h>
 
 extern const NSUInteger SCIndexViewInvalidSection;
+extern const NSInteger SCIndexViewSearchSection;
 
 typedef NS_ENUM(NSUInteger, SCIndexViewStyle) {
     SCIndexViewStyleDefault = 0,    // 指向点

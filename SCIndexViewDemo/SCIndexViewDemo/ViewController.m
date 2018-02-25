@@ -1,7 +1,6 @@
 
 #import "ViewController.h"
 #import "SCIndexViewController.h"
-#import "SCIndexView2Controller.h"
 
 @interface ViewController ()
 
@@ -27,6 +26,7 @@
         {
             SCIndexViewController *indexViewController = [SCIndexViewController new];
             indexViewController.indexViewStyle = SCIndexViewStyleDefault;
+            indexViewController.hasSearch = YES;
             viewController = indexViewController;
         }
             break;
@@ -35,13 +35,14 @@
         {
             SCIndexViewController *indexViewController = [SCIndexViewController new];
             indexViewController.indexViewStyle = SCIndexViewStyleCenterToast;
+            indexViewController.hasSearch = YES;
             viewController = indexViewController;
         }
             break;
             
         case 2:
         {
-            SCIndexView2Controller *indexViewController = [SCIndexView2Controller new];
+            SCIndexViewController *indexViewController = [SCIndexViewController new];
             indexViewController.indexViewStyle = SCIndexViewStyleDefault;
             viewController = indexViewController;
         }
@@ -49,7 +50,7 @@
             
         case 3:
         {
-            SCIndexView2Controller *indexViewController = [SCIndexView2Controller new];
+            SCIndexViewController *indexViewController = [SCIndexViewController new];
             indexViewController.indexViewStyle = SCIndexViewStyleCenterToast;
             viewController = indexViewController;
         }
@@ -71,32 +72,33 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     switch (indexPath.row) {
         case 0:
         {
             cell.textLabel.text = @"指向点类型";
-            cell.detailTextLabel.text = @"V1.x";
+            cell.detailTextLabel.text = @"有搜索";
         }
             break;
             
         case 1:
         {
             cell.textLabel.text = @"中心提示弹层";
-            cell.detailTextLabel.text = @"V1.x";
+            cell.detailTextLabel.text = @"有搜索";
         }
             break;
             
         case 2:
         {
             cell.textLabel.text = @"指向点类型";
-            cell.detailTextLabel.text = @"V2.x";
+            cell.detailTextLabel.text = @"无搜索";
         }
             break;
             
         case 3:
         {
             cell.textLabel.text = @"中心提示弹层";
-            cell.detailTextLabel.text = @"V2.x";
+            cell.detailTextLabel.text = @"无搜索";
         }
             break;
             

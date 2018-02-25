@@ -21,7 +21,6 @@
 		1A3B567F2009F2D30073C98F /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B567C2009F2D30073C98F /* YYClassInfo.m */; };
 		B874C548200A53CB0040DA53 /* SCIndexViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B874C547200A53CB0040DA53 /* SCIndexViewController.m */; };
 		B874C54E200F83770040DA53 /* UITableView+SCIndexView.m in Sources */ = {isa = PBXBuildFile; fileRef = B874C54D200F83770040DA53 /* UITableView+SCIndexView.m */; };
-		B874C551200F9BE30040DA53 /* SCIndexView2Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = B874C550200F9BE30040DA53 /* SCIndexView2Controller.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,8 +50,6 @@
 		B874C547200A53CB0040DA53 /* SCIndexViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCIndexViewController.m; sourceTree = "<group>"; };
 		B874C54C200F83770040DA53 /* UITableView+SCIndexView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableView+SCIndexView.h"; sourceTree = "<group>"; };
 		B874C54D200F83770040DA53 /* UITableView+SCIndexView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITableView+SCIndexView.m"; sourceTree = "<group>"; };
-		B874C54F200F9BE30040DA53 /* SCIndexView2Controller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCIndexView2Controller.h; sourceTree = "<group>"; };
-		B874C550200F9BE30040DA53 /* SCIndexView2Controller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCIndexView2Controller.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,8 +93,6 @@
 				1A3B56452009EE370073C98F /* ViewController.m */,
 				B874C546200A53CB0040DA53 /* SCIndexViewController.h */,
 				B874C547200A53CB0040DA53 /* SCIndexViewController.m */,
-				B874C54F200F9BE30040DA53 /* SCIndexView2Controller.h */,
-				B874C550200F9BE30040DA53 /* SCIndexView2Controller.m */,
 				1A3B56472009EE370073C98F /* Main.storyboard */,
 				1A3B564A2009EE370073C98F /* Assets.xcassets */,
 				1A3B564C2009EE370073C98F /* LaunchScreen.storyboard */,
@@ -164,7 +159,7 @@
 				TargetAttributes = {
 					1A3B563D2009EE370073C98F = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -207,7 +202,6 @@
 			files = (
 				1A3B56772009F0B40073C98F /* SectionItem.m in Sources */,
 				1A3B56462009EE370073C98F /* ViewController.m in Sources */,
-				B874C551200F9BE30040DA53 /* SCIndexView2Controller.m in Sources */,
 				1A3B567E2009F2D30073C98F /* NSObject+YYModel.m in Sources */,
 				B874C54E200F83770040DA53 /* UITableView+SCIndexView.m in Sources */,
 				1A3B56512009EE370073C98F /* main.m in Sources */,
@@ -350,8 +344,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3J3Z9KKCQS;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = SCIndexViewDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -367,8 +361,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3J3Z9KKCQS;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = SCIndexViewDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

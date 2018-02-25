@@ -2,6 +2,7 @@
 #import "SCIndexViewConfiguration.h"
 
 const NSUInteger SCIndexViewInvalidSection = NSUIntegerMax - 1;
+const NSInteger SCIndexViewSearchSection = -1;
 
 static inline UIColor *SCGetColor(CGFloat red, CGFloat green, CGFloat blue, CGFloat alpha)
 {
@@ -65,7 +66,7 @@ static inline UIColor *SCGetColor(CGFloat red, CGFloat green, CGFloat blue, CGFl
                       indexItemSelectedTextColor:[UIColor whiteColor]
                                  indexItemHeight:15
                             indexItemRightMargin:5
-                                 indexItemsSpace:5];
+                                 indexItemsSpace:0];
 }
 
 + (instancetype)configurationWithIndexViewStyle:(SCIndexViewStyle)indexViewStyle
