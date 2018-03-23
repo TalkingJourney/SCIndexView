@@ -7,6 +7,7 @@
 static NSTimeInterval kAnimationDuration = 0.25;
 static void * kSCIndexViewContext = &kSCIndexViewContext;
 static NSString *kSCFrameStringFromSelector = @"frame";
+static NSString *kSCCenterStringFromSelector = @"center";
 static NSString *kSCContentOffsetStringFromSelector = @"contentOffset";
 
 // 根据section值获取CATextLayer的中心点y值
@@ -60,6 +61,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         [self addSubview:self.indicator];
         
         [tableView addObserver:self forKeyPath:kSCFrameStringFromSelector options:NSKeyValueObservingOptionNew context:kSCIndexViewContext];
+        [tableView addObserver:self forKeyPath:kSCCenterStringFromSelector options:NSKeyValueObservingOptionNew context:kSCIndexViewContext];
         [tableView addObserver:self forKeyPath:kSCContentOffsetStringFromSelector options:NSKeyValueObservingOptionNew context:kSCIndexViewContext];
     }
     return self;
@@ -68,6 +70,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
 - (void)dealloc
 {
     [self.tableView removeObserver:self forKeyPath:kSCFrameStringFromSelector];
+    [self.tableView removeObserver:self forKeyPath:kSCCenterStringFromSelector];
     [self.tableView removeObserver:self forKeyPath:kSCContentOffsetStringFromSelector];
 }
 
@@ -180,9 +183,8 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
 {
     if (context != kSCIndexViewContext) return;
     
-    if ([keyPath isEqualToString:kSCFrameStringFromSelector]) {
-        CGRect frame = [change[NSKeyValueChangeNewKey] CGRectValue];
-        self.frame = frame;
+    if ([keyPath isEqualToString:kSCCenterStringFromSelector] || [keyPath isEqualToString:kSCFrameStringFromSelector]) {
+        self.frame = self.tableView.frame;
         
         CGFloat space = kSCIndexViewSpace;
         CGFloat margin = kSCIndexViewMargin;
