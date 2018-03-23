@@ -301,6 +301,8 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     CATextLayer *textLayer = self.subTextLayers[self.currentSection];
     if (self.configuration.indexViewStyle == SCIndexViewStyleDefault) {
         self.indicator.center = CGPointMake(self.bounds.size.width - self.indicator.bounds.size.width / 2 - self.configuration.indicatorRightMargin, textLayer.position.y);
+    } else {
+        self.indicator.center = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
     }
     self.indicator.text = textLayer.string;
     
