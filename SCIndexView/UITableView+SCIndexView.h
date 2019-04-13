@@ -33,6 +33,9 @@
 // tableView在NavigationBar上是否半透明
 @property (nonatomic, assign) BOOL sc_translucentForTableViewInNavigationBar;
 
+// tableView从第几个section开始使用索引 Default = 0
+@property (nonatomic, assign) NSUInteger sc_startSection;
+
 // 索引视图的配置
 @property (nonatomic, strong) SCIndexViewConfiguration *sc_indexViewConfiguration;
 

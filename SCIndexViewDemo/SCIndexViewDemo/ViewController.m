@@ -25,7 +25,7 @@
         case 0:
         {
             SCIndexViewController *indexViewController = [SCIndexViewController new];
-            indexViewController.indexViewStyle = SCIndexViewStyleDefault;
+            indexViewController.ignoreSections = NO;
             indexViewController.hasSearch = YES;
             viewController = indexViewController;
         }
@@ -34,7 +34,7 @@
         case 1:
         {
             SCIndexViewController *indexViewController = [SCIndexViewController new];
-            indexViewController.indexViewStyle = SCIndexViewStyleCenterToast;
+            indexViewController.ignoreSections = YES;
             indexViewController.hasSearch = YES;
             viewController = indexViewController;
         }
@@ -43,7 +43,7 @@
         case 2:
         {
             SCIndexViewController *indexViewController = [SCIndexViewController new];
-            indexViewController.indexViewStyle = SCIndexViewStyleDefault;
+            indexViewController.ignoreSections = NO;
             viewController = indexViewController;
         }
             break;
@@ -51,7 +51,7 @@
         case 3:
         {
             SCIndexViewController *indexViewController = [SCIndexViewController new];
-            indexViewController.indexViewStyle = SCIndexViewStyleCenterToast;
+            indexViewController.ignoreSections = YES;
             viewController = indexViewController;
         }
             break;
@@ -76,28 +76,28 @@
     switch (indexPath.row) {
         case 0:
         {
-            cell.textLabel.text = @"指向点类型";
+            cell.textLabel.text = @"不忽略sections";
             cell.detailTextLabel.text = @"有搜索";
         }
             break;
             
         case 1:
         {
-            cell.textLabel.text = @"中心提示弹层";
+            cell.textLabel.text = @"忽略三个sections";
             cell.detailTextLabel.text = @"有搜索";
         }
             break;
             
         case 2:
         {
-            cell.textLabel.text = @"指向点类型";
+            cell.textLabel.text = @"不忽略sections";
             cell.detailTextLabel.text = @"无搜索";
         }
             break;
             
         case 3:
         {
-            cell.textLabel.text = @"中心提示弹层";
+            cell.textLabel.text = @"忽略三个sections";
             cell.detailTextLabel.text = @"无搜索";
         }
             break;

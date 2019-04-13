@@ -156,7 +156,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         currentSection = firstVisibleSection;
     } else {
         insetHeight = UIApplication.sharedApplication.statusBarFrame.size.height + 44;
-        for (NSInteger section = firstVisibleSection; section < self.subTextLayers.count; section++) {
+        for (NSInteger section = firstVisibleSection; section < self.tableView.numberOfSections; section++) {
             CGRect sectionFrame = [self.tableView rectForSection:section];
             if (sectionFrame.origin.y + sectionFrame.size.height - self.tableView.contentOffset.y >= insetHeight) {
                 currentSection = section;
@@ -165,15 +165,19 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         }
     }
     
+    BOOL selectSearchLayer = NO;
     if (currentSection == 0 && self.searchLayer) {
         CGRect sectionFrame = [self.tableView rectForSection:currentSection];
-        BOOL selectSearchLayer = (sectionFrame.origin.y - self.tableView.contentOffset.y - insetHeight) > 0;
-        if (selectSearchLayer) {
-            currentSection = SCIndexViewSearchSection;
-        }
+        selectSearchLayer = (sectionFrame.origin.y - self.tableView.contentOffset.y - insetHeight) > 0;
     }
     
-    if (currentSection < 0 && currentSection != SCIndexViewSearchSection) return;
+    if (selectSearchLayer) {
+        currentSection = SCIndexViewSearchSection;
+    }
+    else {
+        currentSection = currentSection - self.startSection;
+    }
+    
     self.currentSection = currentSection;
 }
 
@@ -223,7 +227,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         CGFloat insetHeight = self.translucentForTableViewInNavigationBar ? UIApplication.sharedApplication.statusBarFrame.size.height + 44 : 0;
         [self.tableView setContentOffset:CGPointMake(0, -insetHeight) animated:NO];
     } else {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:self.currentSection];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:self.currentSection + self.startSection];
         [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
     }
     
@@ -450,13 +454,22 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
 
 - (void)setCurrentSection:(NSInteger)currentSection
 {
+    if (currentSection == _currentSection) return;
     if ((currentSection < 0 && currentSection != SCIndexViewSearchSection)
-        || currentSection >= (NSInteger)self.subTextLayers.count
-        || currentSection == _currentSection) return;
+        || currentSection >= (NSInteger)self.subTextLayers.count) {
+        [self refreshTextLayer:NO];
+        return;
+    }
     
     [self refreshTextLayer:NO];
     _currentSection = currentSection;
     [self refreshTextLayer:YES];
+}
+
+- (void)setStartSection:(NSUInteger)startSection {
+    if (_startSection == startSection) return;
+    _startSection = startSection;
+    [self configCurrentSection];
 }
 
 - (NSMutableArray *)subTextLayers

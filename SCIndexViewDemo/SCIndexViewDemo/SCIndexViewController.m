@@ -20,18 +20,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    switch (self.indexViewStyle) {
-        case SCIndexViewStyleDefault:
-            self.title = @"指向点类型";
-            break;
-
-        case SCIndexViewStyleCenterToast:
-            self.title = @"中心提示弹层";
-            break;
-
-        default:
-            break;
-    }
+    self.title = self.ignoreSections ? @"忽略三个sections" : @"不忽略sections";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(onActionWithRightBarButton)];
     
     self.translucent = YES;
@@ -39,11 +28,17 @@
     [self.view addSubview:self.tableView];
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Indexes" ofType:@"plist"];
+        NSString *plistName = self.ignoreSections ? @"IgnoreSectionsIndexes" : @"Indexes";
+        NSString *plistPath = [[NSBundle mainBundle] pathForResource:plistName ofType:@"plist"];
         NSArray<SectionItem *> *tableViewDataSource = [NSArray yy_modelArrayWithClass:SectionItem.class json:[NSArray arrayWithContentsOfFile:plistPath]];
         
         NSMutableArray *indexViewDataSource = [NSMutableArray array];
+        NSUInteger startSection = 0;
         for (SectionItem *item in tableViewDataSource) {
+            if ([item.title hasPrefix:@"Ignore"]) {
+                startSection++;
+                continue;
+            }
             [indexViewDataSource addObject:item.title];
         }
         dispatch_sync(dispatch_get_main_queue(), ^{
@@ -54,6 +49,7 @@
                 [indexViewDataSource insertObject:UITableViewIndexSearch atIndex:0];
             }
             self.tableView.sc_indexViewDataSource = indexViewDataSource.copy;
+            self.tableView.sc_startSection = startSection;
         });
     });
 }
@@ -117,7 +113,7 @@
             self.tableView.tableHeaderView = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 60)];
         }
         
-        SCIndexViewConfiguration *configuration = [SCIndexViewConfiguration configurationWithIndexViewStyle:self.indexViewStyle];
+        SCIndexViewConfiguration *configuration = [SCIndexViewConfiguration configuration];
         _tableView.sc_indexViewConfiguration = configuration;
         _tableView.sc_translucentForTableViewInNavigationBar = self.translucent;
     }

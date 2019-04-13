@@ -168,6 +168,7 @@
     if (!self.sc_indexView && self.superview) {
         SCIndexView *indexView = [[SCIndexView alloc] initWithTableView:self configuration:self.sc_indexViewConfiguration];
         indexView.translucentForTableViewInNavigationBar = self.sc_translucentForTableViewInNavigationBar;
+        indexView.startSection = self.sc_startSection;
         indexView.delegate = self;
         [self.superview addSubview:indexView];
 
@@ -175,6 +176,18 @@
     }
     
     self.sc_indexView.dataSource = sc_indexViewDataSource.copy;
+}
+
+- (NSUInteger)sc_startSection {
+    NSNumber *number = objc_getAssociatedObject(self, @selector(sc_startSection));
+    return number.unsignedIntegerValue;
+}
+
+- (void)setSc_startSection:(NSUInteger)sc_startSection {
+    if (self.sc_startSection == sc_startSection) return;
+    
+    objc_setAssociatedObject(self, @selector(sc_startSection), @(sc_startSection), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    self.sc_indexView.startSection = sc_startSection;
 }
 
 @end
