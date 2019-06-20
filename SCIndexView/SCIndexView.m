@@ -174,7 +174,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     }
     
     BOOL selectSearchLayer = NO;
-    if (currentSection == 0 && self.searchLayer) {
+    if (currentSection == 0 && self.searchLayer && currentSection < self.tableView.numberOfSections) {
         CGRect sectionFrame = [self.tableView rectForSection:currentSection];
         selectSearchLayer = (sectionFrame.origin.y - self.tableView.contentOffset.y - insetHeight) > 0;
     }
@@ -235,8 +235,20 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         CGFloat insetHeight = self.translucentForTableViewInNavigationBar ? UIApplication.sharedApplication.statusBarFrame.size.height + 44 : 0;
         [self.tableView setContentOffset:CGPointMake(0, -insetHeight) animated:NO];
     } else {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:self.currentSection + self.startSection];
-        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        NSInteger currentSection = self.currentSection + self.startSection;
+        if (currentSection >= 0 && currentSection < self.tableView.numberOfSections) {
+            CGRect rect = [self.tableView rectForSection:currentSection];
+            CGPoint contentOffset = self.tableView.contentOffset;
+            contentOffset.y = rect.origin.y;
+            CGFloat offsetMaxY = self.tableView.contentSize.height + self.tableView.contentInset.bottom - self.tableView.bounds.size.height;
+            if (self.translucentForTableViewInNavigationBar) {
+                contentOffset.y -= UIApplication.sharedApplication.statusBarFrame.size.height + 44;
+            }
+            if (contentOffset.y > offsetMaxY) {
+                contentOffset.y = offsetMaxY;
+            }
+            self.tableView.contentOffset = contentOffset;
+        }
     }
     
     if (self.isTouchingIndexView) {
