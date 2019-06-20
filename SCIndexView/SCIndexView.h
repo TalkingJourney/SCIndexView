@@ -50,4 +50,7 @@
 // SCIndexView 会对 tableView 进行 strong 引用，请注意，防止“循环引用”
 - (instancetype)initWithTableView:(UITableView *)tableView configuration:(SCIndexViewConfiguration *)configuration;
 
+// 手动更新IndexView的CurrentSection
+- (void)refreshCurrentSection;
+
 @end

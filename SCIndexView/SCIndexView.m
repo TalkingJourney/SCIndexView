@@ -74,6 +74,14 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     [self.tableView removeObserver:self forKeyPath:kSCContentOffsetStringFromSelector];
 }
 
+#pragma mark - Public Methods
+
+- (void)refreshCurrentSection {
+    [self configCurrentSection];
+}
+
+#pragma mark - 
+
 - (void)configSubLayersAndSubviews
 {
     BOOL hasSearchLayer = [self.dataSource.firstObject isEqualToString:UITableViewIndexSearch];
@@ -158,7 +166,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         insetHeight = UIApplication.sharedApplication.statusBarFrame.size.height + 44;
         for (NSInteger section = firstVisibleSection; section < self.tableView.numberOfSections; section++) {
             CGRect sectionFrame = [self.tableView rectForSection:section];
-            if (sectionFrame.origin.y + sectionFrame.size.height - self.tableView.contentOffset.y >= insetHeight) {
+            if (sectionFrame.origin.y + sectionFrame.size.height - self.tableView.contentOffset.y > insetHeight) {
                 currentSection = section;
                 break;
             }

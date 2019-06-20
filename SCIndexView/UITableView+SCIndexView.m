@@ -90,6 +90,12 @@
     }
 }
 
+#pragma mark - Public Methods
+
+- (void)sc_refreshCurrentSectionOfIndexView {
+    [self.sc_indexView refreshCurrentSection];
+}
+
 #pragma mark - Getter and Setter
 
 - (SCIndexView *)sc_indexView

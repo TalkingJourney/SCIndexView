@@ -39,4 +39,7 @@
 // 索引视图的配置
 @property (nonatomic, strong) SCIndexViewConfiguration *sc_indexViewConfiguration;
 
+// 手动更新IndexView的CurrentSection
+- (void)sc_refreshCurrentSectionOfIndexView;
+
 @end
