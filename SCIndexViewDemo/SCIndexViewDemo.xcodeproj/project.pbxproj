@@ -22,6 +22,7 @@
 		B874C548200A53CB0040DA53 /* SCIndexViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B874C547200A53CB0040DA53 /* SCIndexViewController.m */; };
 		B874C54E200F83770040DA53 /* UITableView+SCIndexView.m in Sources */ = {isa = PBXBuildFile; fileRef = B874C54D200F83770040DA53 /* UITableView+SCIndexView.m */; };
 		B88578D0226208CD008EF8C9 /* IgnoreSectionsIndexes.plist in Resources */ = {isa = PBXBuildFile; fileRef = B88578CF226208CD008EF8C9 /* IgnoreSectionsIndexes.plist */; };
+		B8ACF53A22BCCAFC006E3F09 /* SCIndexViewHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B8ACF53922BCCAFC006E3F09 /* SCIndexViewHeaderView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,8 @@
 		B874C54C200F83770040DA53 /* UITableView+SCIndexView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableView+SCIndexView.h"; sourceTree = "<group>"; };
 		B874C54D200F83770040DA53 /* UITableView+SCIndexView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITableView+SCIndexView.m"; sourceTree = "<group>"; };
 		B88578CF226208CD008EF8C9 /* IgnoreSectionsIndexes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = IgnoreSectionsIndexes.plist; sourceTree = "<group>"; };
+		B8ACF53822BCCAFC006E3F09 /* SCIndexViewHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCIndexViewHeaderView.h; sourceTree = "<group>"; };
+		B8ACF53922BCCAFC006E3F09 /* SCIndexViewHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCIndexViewHeaderView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +99,8 @@
 				1A3B56452009EE370073C98F /* ViewController.m */,
 				B874C546200A53CB0040DA53 /* SCIndexViewController.h */,
 				B874C547200A53CB0040DA53 /* SCIndexViewController.m */,
+				B8ACF53822BCCAFC006E3F09 /* SCIndexViewHeaderView.h */,
+				B8ACF53922BCCAFC006E3F09 /* SCIndexViewHeaderView.m */,
 				1A3B56472009EE370073C98F /* Main.storyboard */,
 				1A3B564A2009EE370073C98F /* Assets.xcassets */,
 				1A3B564C2009EE370073C98F /* LaunchScreen.storyboard */,
@@ -205,6 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A3B56772009F0B40073C98F /* SectionItem.m in Sources */,
+				B8ACF53A22BCCAFC006E3F09 /* SCIndexViewHeaderView.m in Sources */,
 				1A3B56462009EE370073C98F /* ViewController.m in Sources */,
 				1A3B567E2009F2D30073C98F /* NSObject+YYModel.m in Sources */,
 				B874C54E200F83770040DA53 /* UITableView+SCIndexView.m in Sources */,

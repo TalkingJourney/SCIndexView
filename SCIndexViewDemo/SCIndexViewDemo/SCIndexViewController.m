@@ -3,6 +3,7 @@
 #import "YYModel.h"
 #import "SectionItem.h"
 #import "UITableView+SCIndexView.h"
+#import "SCIndexViewHeaderView.h"
 
 @interface SCIndexViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -43,7 +44,11 @@
         }
         dispatch_sync(dispatch_get_main_queue(), ^{
             self.tableViewDataSource = tableViewDataSource.copy;
+            
             [self.tableView reloadData];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self reloadColorForHeaderView];
+            });
             
             if (self.hasSearch) {
                 [indexViewDataSource insertObject:UITableViewIndexSearch atIndex:0];
@@ -82,10 +87,46 @@
     return cell;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
+    SCIndexViewHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:SCIndexViewHeaderView.reuseID];
     SectionItem *sectionItem = self.tableViewDataSource[section];
-    return sectionItem.title;
+    [headerView configWithTitle:sectionItem.title];
+    return headerView;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return SCIndexViewHeaderView.headerViewHeight;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self reloadColorForHeaderView];
+}
+
+- (void)reloadColorForHeaderView {
+    NSArray<NSIndexPath *> *indexPaths = self.tableView.indexPathsForVisibleRows;
+    for (NSIndexPath *indexPath in indexPaths) {
+        SCIndexViewHeaderView *headerView = (SCIndexViewHeaderView *)[self.tableView headerViewForSection:indexPath.section];
+        [self configColorWithHeaderView:headerView];
+    }
+}
+
+- (void)configColorWithHeaderView:(SCIndexViewHeaderView *)headerView {
+    if (!headerView) {
+        return;
+    }
+    
+    CGFloat InsetTop = self.translucent ? UIApplication.sharedApplication.statusBarFrame.size.height + 44 : 0;
+    double diff = fabs(headerView.frame.origin.y - self.tableView.contentOffset.y - InsetTop);
+    CGFloat headerHeight = SCIndexViewHeaderView.headerViewHeight;
+    double progress;
+    if (diff >= headerHeight) {
+        progress = 1;
+    }
+    else {
+        progress = diff / headerHeight;
+    }
+    [headerView configWithProgress:progress];
 }
 
 #pragma mark - Event Response
@@ -108,6 +149,7 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         [_tableView registerClass:UITableViewCell.class forCellReuseIdentifier:@"cell"];
+        [_tableView registerClass:SCIndexViewHeaderView.class forHeaderFooterViewReuseIdentifier:SCIndexViewHeaderView.reuseID];
         
         if (self.hasSearch) {
             self.tableView.tableHeaderView = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 60)];
