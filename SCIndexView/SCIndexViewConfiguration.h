@@ -32,19 +32,4 @@ typedef NS_ENUM(NSUInteger, SCIndexViewStyle) {
 
 + (instancetype)configurationWithIndexViewStyle:(SCIndexViewStyle)indexViewStyle;
 
-+ (instancetype)configurationWithIndexViewStyle:(SCIndexViewStyle)indexViewStyle
-                       indicatorBackgroundColor:(UIColor *)indicatorBackgroundColor
-                             indicatorTextColor:(UIColor *)indicatorTextColor
-                              indicatorTextFont:(UIFont *)indicatorTextFont
-                                indicatorHeight:(CGFloat)indicatorHeight
-                           indicatorRightMargin:(CGFloat)indicatorRightMargin
-                          indicatorCornerRadius:(CGFloat)indicatorCornerRadius
-                       indexItemBackgroundColor:(UIColor *)indexItemBackgroundColor
-                             indexItemTextColor:(UIColor *)indexItemTextColor
-               indexItemSelectedBackgroundColor:(UIColor *)indexItemSelectedBackgroundColor
-                     indexItemSelectedTextColor:(UIColor *)indexItemSelectedTextColor
-                                indexItemHeight:(CGFloat)indexItemHeight
-                           indexItemRightMargin:(CGFloat)indexItemRightMargin
-                                indexItemsSpace:(CGFloat)indexItemsSpace;
-
 @end

@@ -3,12 +3,9 @@
 
 #define kSCIndexViewSpace (self.configuration.indexItemHeight + self.configuration.indexItemsSpace)
 #define kSCIndexViewMargin ((self.bounds.size.height - kSCIndexViewSpace * self.dataSource.count) / 2)
+#define kSCIndexViewInsetTop (self.translucentForTableViewInNavigationBar ? UIApplication.sharedApplication.statusBarFrame.size.height + 44 : 0)
 
 static NSTimeInterval kAnimationDuration = 0.25;
-static void * kSCIndexViewContext = &kSCIndexViewContext;
-static NSString *kSCFrameStringFromSelector = @"frame";
-static NSString *kSCCenterStringFromSelector = @"center";
-static NSString *kSCContentOffsetStringFromSelector = @"contentOffset";
 
 // 根据section值获取CATextLayer的中心点y值
 static inline CGFloat SCGetTextLayerCenterY(NSUInteger position, CGFloat margin, CGFloat space)
@@ -33,10 +30,8 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
 @property (nonatomic, strong) CAShapeLayer *searchLayer;
 @property (nonatomic, strong) NSMutableArray<CATextLayer *> *subTextLayers;
 @property (nonatomic, strong) UILabel *indicator;
-@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, weak) UITableView *tableView;
 
-// tableView是否实现cellHeight的代理方法
-@property (nonatomic, assign) BOOL tableViewHasCellHeightMethod;
 // 触摸索引视图
 @property (nonatomic, assign, getter=isTouchingIndexView) BOOL touchingIndexView;
 
@@ -56,28 +51,40 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         _currentSection = NSUIntegerMax;
         _configuration = configuration;
         _translucentForTableViewInNavigationBar = YES;
-        _tableViewHasCellHeightMethod = self.tableView.delegate && [self.tableView.delegate respondsToSelector:@selector(tableView:heightForRowAtIndexPath:)];
         
         [self addSubview:self.indicator];
-        
-        [tableView addObserver:self forKeyPath:kSCFrameStringFromSelector options:NSKeyValueObservingOptionNew context:kSCIndexViewContext];
-        [tableView addObserver:self forKeyPath:kSCCenterStringFromSelector options:NSKeyValueObservingOptionNew context:kSCIndexViewContext];
-        [tableView addObserver:self forKeyPath:kSCContentOffsetStringFromSelector options:NSKeyValueObservingOptionNew context:kSCIndexViewContext];
     }
     return self;
 }
 
-- (void)dealloc
-{
-    [self.tableView removeObserver:self forKeyPath:kSCFrameStringFromSelector];
-    [self.tableView removeObserver:self forKeyPath:kSCCenterStringFromSelector];
-    [self.tableView removeObserver:self forKeyPath:kSCContentOffsetStringFromSelector];
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGFloat space = kSCIndexViewSpace;
+    CGFloat margin = kSCIndexViewMargin;
+    
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    if (self.searchLayer) {
+        self.searchLayer.frame = CGRectMake(self.bounds.size.width - self.configuration.indexItemRightMargin - self.configuration.indexItemHeight, SCGetTextLayerCenterY(0, margin, space) - self.configuration.indexItemHeight / 2, self.configuration.indexItemHeight, self.configuration.indexItemHeight);
+        self.searchLayer.cornerRadius = self.configuration.indexItemHeight / 2;
+        self.searchLayer.contentsScale = UIScreen.mainScreen.scale;
+        self.searchLayer.backgroundColor = self.configuration.indexItemBackgroundColor.CGColor;
+    }
+    
+    NSInteger deta = self.searchLayer ? 1 : 0;
+    for (int i = 0; i < self.subTextLayers.count; i++) {
+        CATextLayer *textLayer = self.subTextLayers[i];
+        NSUInteger section = i + deta;
+        textLayer.frame = CGRectMake(self.bounds.size.width - self.configuration.indexItemRightMargin - self.configuration.indexItemHeight, SCGetTextLayerCenterY(section, margin, space) - self.configuration.indexItemHeight / 2, self.configuration.indexItemHeight, self.configuration.indexItemHeight);
+    }
+    [CATransaction commit];
 }
 
 #pragma mark - Public Methods
 
 - (void)refreshCurrentSection {
-    [self configCurrentSection];
+    [self onActionWithScroll];
 }
 
 #pragma mark - 
@@ -158,25 +165,16 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         }
     }
     
-    NSInteger firstVisibleSection = self.tableView.indexPathsForVisibleRows.firstObject.section;
-    CGFloat insetHeight = 0;
-    if (!self.translucentForTableViewInNavigationBar) {
-        currentSection = firstVisibleSection;
-    } else {
-        insetHeight = UIApplication.sharedApplication.statusBarFrame.size.height + 44;
-        for (NSInteger section = firstVisibleSection; section < self.tableView.numberOfSections; section++) {
-            CGRect sectionFrame = [self.tableView rectForSection:section];
-            if (sectionFrame.origin.y + sectionFrame.size.height - self.tableView.contentOffset.y > insetHeight) {
-                currentSection = section;
-                break;
-            }
-        }
-    }
+    CGFloat insetTop = kSCIndexViewInsetTop;
+    CGPoint contentOffset = self.tableView.contentOffset;
+    CGPoint point = CGPointMake(contentOffset.x, contentOffset.y + insetTop);
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
+    currentSection = indexPath.section;
     
     BOOL selectSearchLayer = NO;
     if (currentSection == 0 && self.searchLayer && currentSection < self.tableView.numberOfSections) {
         CGRect sectionFrame = [self.tableView rectForSection:currentSection];
-        selectSearchLayer = (sectionFrame.origin.y - self.tableView.contentOffset.y - insetHeight) > 0;
+        selectSearchLayer = (sectionFrame.origin.y - self.tableView.contentOffset.y - insetTop) > 0;
     }
     
     if (selectSearchLayer) {
@@ -189,39 +187,6 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     self.currentSection = currentSection;
 }
 
-#pragma mark - KVO
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
-{
-    if (context != kSCIndexViewContext) return;
-    
-    if ([keyPath isEqualToString:kSCCenterStringFromSelector] || [keyPath isEqualToString:kSCFrameStringFromSelector]) {
-        self.frame = self.tableView.frame;
-        
-        CGFloat space = kSCIndexViewSpace;
-        CGFloat margin = kSCIndexViewMargin;
-        
-        [CATransaction begin];
-        [CATransaction setDisableActions:YES];
-        if (self.searchLayer) {
-            self.searchLayer.frame = CGRectMake(self.bounds.size.width - self.configuration.indexItemRightMargin - self.configuration.indexItemHeight, SCGetTextLayerCenterY(0, margin, space) - self.configuration.indexItemHeight / 2, self.configuration.indexItemHeight, self.configuration.indexItemHeight);
-            self.searchLayer.cornerRadius = self.configuration.indexItemHeight / 2;
-            self.searchLayer.contentsScale = UIScreen.mainScreen.scale;
-            self.searchLayer.backgroundColor = self.configuration.indexItemBackgroundColor.CGColor;
-        }
-        
-        NSInteger deta = self.searchLayer ? 1 : 0;
-        for (int i = 0; i < self.subTextLayers.count; i++) {
-            CATextLayer *textLayer = self.subTextLayers[i];
-            NSUInteger section = i + deta;
-            textLayer.frame = CGRectMake(self.bounds.size.width - self.configuration.indexItemRightMargin - self.configuration.indexItemHeight, SCGetTextLayerCenterY(section, margin, space) - self.configuration.indexItemHeight / 2, self.configuration.indexItemHeight, self.configuration.indexItemHeight);
-        }
-        [CATransaction commit];
-    } else if ([keyPath isEqualToString:kSCContentOffsetStringFromSelector]) {
-        [self onActionWithScroll];
-    }
-}
-
 #pragma mark - Event Response
 
 - (void)onActionWithDidSelect
@@ -231,22 +196,17 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         return;
     }
     
+    CGFloat insetTop = kSCIndexViewInsetTop;
     if (self.currentSection == SCIndexViewSearchSection) {
-        CGFloat insetHeight = self.translucentForTableViewInNavigationBar ? UIApplication.sharedApplication.statusBarFrame.size.height + 44 : 0;
-        [self.tableView setContentOffset:CGPointMake(0, -insetHeight) animated:NO];
+        [self.tableView setContentOffset:CGPointMake(0, -insetTop) animated:NO];
     } else {
         NSInteger currentSection = self.currentSection + self.startSection;
         if (currentSection >= 0 && currentSection < self.tableView.numberOfSections) {
             CGRect rect = [self.tableView rectForSection:currentSection];
-            CGPoint contentOffset = self.tableView.contentOffset;
-            contentOffset.y = rect.origin.y;
+            CGFloat offsetY = rect.origin.y - insetTop;
             CGFloat offsetMaxY = self.tableView.contentSize.height + self.tableView.contentInset.bottom - self.tableView.bounds.size.height;
-            if (self.translucentForTableViewInNavigationBar) {
-                contentOffset.y -= UIApplication.sharedApplication.statusBarFrame.size.height + 44;
-            }
-            if (contentOffset.y > offsetMaxY) {
-                contentOffset.y = offsetMaxY;
-            }
+            CGPoint contentOffset = self.tableView.contentOffset;
+            contentOffset.y = offsetY < offsetMaxY ? offsetY : offsetMaxY;
             self.tableView.contentOffset = contentOffset;
         }
     }
@@ -268,10 +228,6 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         
         return; // 当滑动索引视图时，tableView滚动不能影响索引位置
     }
-    
-    // 可能tableView的contentOffset变化，却没有scroll，此时不应该影响索引位置
-    BOOL isScrolling = self.tableView.isDragging || self.tableView.isDecelerating;
-    if (!isScrolling) return;
     
     [self configCurrentSection];
 }
