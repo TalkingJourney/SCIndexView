@@ -82,8 +82,6 @@ static inline UIColor *SCGetColor(CGFloat red, CGFloat green, CGFloat blue, CGFl
     self.titleLabel.textColor = textColor;
     UIColor *bgColor = [self getColorWithRGBArray:bgColorNowArray];
     self.contentView.backgroundColor = bgColor;
-    
-    NSLog(@"\ntextColor: %@\nbgColor: %@\nprogress: %f\n", textColor, bgColor, progress);
 }
 
 - (NSArray<NSNumber *> *)getRGBArrayByColor:(UIColor *)color
