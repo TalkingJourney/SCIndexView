@@ -352,6 +352,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     
     CGFloat space = self.configuration.indexItemRightMargin * 2;
     if (point.x > self.bounds.size.width - space - self.configuration.indexItemHeight
+        && point.x <= self.bounds.size.width
         && point.y > CGRectGetMinY(firstLayer.frame) - space
         && point.y < CGRectGetMaxY(lastLayer.frame) + space) {
         return YES;

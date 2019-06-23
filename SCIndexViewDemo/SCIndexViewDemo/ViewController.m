@@ -1,6 +1,7 @@
 
 #import "ViewController.h"
 #import "SCIndexViewController.h"
+#import "SCTableViewsController.h"
 
 @interface ViewController ()
 
@@ -56,6 +57,12 @@
         }
             break;
             
+        case 4:
+        {
+            SCTableViewsController *indexViewController = [SCTableViewsController new];
+            viewController = indexViewController;
+        }
+            
         default:
             break;
     }
@@ -66,7 +73,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 4;
+    return 5;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -99,6 +106,13 @@
         {
             cell.textLabel.text = @"忽略三个sections";
             cell.detailTextLabel.text = @"无搜索";
+        }
+            break;
+            
+        case 4:
+        {
+            cell.textLabel.text = @"ScrollView嵌套多个TableView";
+            cell.detailTextLabel.text = @"";
         }
             break;
             
