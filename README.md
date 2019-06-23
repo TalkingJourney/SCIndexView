@@ -7,9 +7,9 @@ toast效果图：
 # 功能及优点
 主要功能及优点如下：
 1. 当滑动UITableView列表时，索引视图的索引位置会跟着移动；
-2. 当滑动UITableView列表时，另一根手指再滑动索引视图，列表滑动事件失效；
+2. UITableView和SCIndexView之间手势和事件不冲突，操作其中一个视图，另一个视图失效；
 3. 当滑动索引视图时，会有指示器或者toast提示当前索引位置；
-4. 当滑动索引视图时，不可以点击或者滑动UITableView列表；
+4. 索引视图可以从sc_startSection开始，忽略前面section；
 5. 可以任意定制指示器、toast、索引视图的大小，文字颜色大小，间距等UI样式；
 6. 当第一个数据为UITableViewIndexSearch时，自动添加放大镜图标。
 

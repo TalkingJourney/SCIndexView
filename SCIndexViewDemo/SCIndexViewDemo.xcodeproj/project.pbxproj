@@ -132,11 +132,11 @@
 		1A3B56782009F2D30073C98F /* YYModel */ = {
 			isa = PBXGroup;
 			children = (
-				1A3B56792009F2D30073C98F /* YYClassInfo.h */,
-				1A3B567A2009F2D30073C98F /* YYModel.h */,
-				1A3B567B2009F2D30073C98F /* NSObject+YYModel.m */,
-				1A3B567C2009F2D30073C98F /* YYClassInfo.m */,
 				1A3B567D2009F2D30073C98F /* NSObject+YYModel.h */,
+				1A3B567B2009F2D30073C98F /* NSObject+YYModel.m */,
+				1A3B56792009F2D30073C98F /* YYClassInfo.h */,
+				1A3B567C2009F2D30073C98F /* YYClassInfo.m */,
+				1A3B567A2009F2D30073C98F /* YYModel.h */,
 			);
 			path = YYModel;
 			sourceTree = "<group>";
