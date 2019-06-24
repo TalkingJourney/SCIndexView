@@ -276,7 +276,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
 
 - (void)showIndicator:(BOOL)animated
 {
-    if (!self.indicator.hidden || self.currentSection < 0 || self.currentSection >= (NSInteger)self.subTextLayers.count) return;
+    if (self.currentSection < 0 || self.currentSection >= (NSInteger)self.subTextLayers.count) return;
     
     CATextLayer *textLayer = self.subTextLayers[self.currentSection];
     if (self.configuration.indexViewStyle == SCIndexViewStyleDefault) {
@@ -369,7 +369,6 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     
     NSInteger deta = self.searchLayer ? 1 : 0;
     NSInteger currentSection = currentPosition - deta;
-    [self hideIndicator:NO];
     self.currentSection = currentSection;
     [self showIndicator:YES];
     [self onActionWithDidSelect];
@@ -395,7 +394,6 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     NSInteger currentSection = currentPosition - deta;
     if (currentSection == self.currentSection) return YES;
     
-    [self hideIndicator:NO];
     self.currentSection = currentSection;
     [self showIndicator:NO];
     [self onActionWithDidSelect];
@@ -408,12 +406,22 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event
 {
     self.touchingIndexView = NO;
+    NSInteger oldCurrentPosition = self.currentSection;
+    [self refreshCurrentSection];
+    if (oldCurrentPosition != self.currentSection) {
+        [self showIndicator:NO];
+    }
     [self hideIndicator:YES];
 }
 
 - (void)cancelTrackingWithEvent:(UIEvent *)event
 {
     self.touchingIndexView = NO;
+    NSInteger oldCurrentPosition = self.currentSection;
+    [self refreshCurrentSection];
+    if (oldCurrentPosition != self.currentSection) {
+        [self showIndicator:NO];
+    }
     [self hideIndicator:YES];
 }
 
