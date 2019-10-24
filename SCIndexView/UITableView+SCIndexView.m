@@ -3,6 +3,12 @@
 #import <objc/runtime.h>
 #import "SCIndexView.h"
 
+@interface SCWeakProxy : NSObject
+@property (nonatomic, weak) id target;
+@end
+@implementation SCWeakProxy
+@end
+
 @interface UITableView () <SCIndexViewDelegate>
 
 @property (nonatomic, strong) SCIndexView *sc_indexView;
@@ -122,14 +128,17 @@
 
 - (id<SCTableViewSectionIndexDelegate>)sc_indexViewDelegate
 {
-    return objc_getAssociatedObject(self, @selector(sc_indexViewDelegate));
+    SCWeakProxy *weakProxy = objc_getAssociatedObject(self, @selector(sc_indexViewDelegate));
+    return weakProxy.target;
 }
 
 - (void)setSc_indexViewDelegate:(id<SCTableViewSectionIndexDelegate>)sc_indexViewDelegate
 {
     if (self.sc_indexViewDelegate == sc_indexViewDelegate) return;
     
-    objc_setAssociatedObject(self, @selector(sc_indexViewDelegate), sc_indexViewDelegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    SCWeakProxy *weakProxy = [SCWeakProxy new];
+    weakProxy.target = sc_indexViewDelegate;
+    objc_setAssociatedObject(self, @selector(sc_indexViewDelegate), weakProxy, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (BOOL)sc_translucentForTableViewInNavigationBar
