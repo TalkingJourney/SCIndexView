@@ -171,10 +171,10 @@
             [self.superview addSubview:self.sc_indexView];
         }
         self.sc_indexView.dataSource = sc_indexViewDataSource.copy;
+        self.sc_indexView.hidden = NO;
     }
     else {
-        [self.sc_indexView removeFromSuperview];
-        self.sc_indexView = nil;
+        self.sc_indexView.hidden = YES;
     }
 }
 
