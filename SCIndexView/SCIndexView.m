@@ -165,11 +165,15 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         }
     }
     
+    NSInteger firstVisibleSection = self.tableView.indexPathsForVisibleRows.firstObject.section;
     CGFloat insetTop = kSCIndexViewInsetTop;
-    CGPoint contentOffset = self.tableView.contentOffset;
-    CGPoint point = CGPointMake(contentOffset.x, contentOffset.y + insetTop);
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
-    currentSection = indexPath.section;
+    for (NSInteger section = firstVisibleSection; section < self.tableView.numberOfSections; section++) {
+        CGRect sectionFrame = [self.tableView rectForSection:section];
+        if (sectionFrame.origin.y + sectionFrame.size.height - self.tableView.contentOffset.y > insetTop) {
+            currentSection = section;
+            break;
+        }
+    }
     
     BOOL selectSearchLayer = NO;
     if (currentSection == 0 && self.searchLayer && currentSection < self.tableView.numberOfSections) {
