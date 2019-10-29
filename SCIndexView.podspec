@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SCIndexView"
-  s.version      = "2.2.2"
+  s.version      = "2.2.3"
   s.summary      = "SCIndexView provide a index view."
   s.description  = "SCIndexView provide a index view like Wechat. It is very easy."
 
@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, "7.0"
 
-  s.source       = { :git => "https://github.com/TalkingJourney/SCIndexView.git", :tag => "2.2.2" }
+  s.source       = { :git => "https://github.com/TalkingJourney/SCIndexView.git", :tag => "2.2.3" }
 
   s.source_files = "SCIndexView/**/*.{h,m}"
   s.public_header_files = "SCIndexView/**/*.h"
