@@ -27,7 +27,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
 
 @interface SCIndexView ()
 
-@property (nonatomic, strong) CAShapeLayer *searchLayer;
+@property (nonatomic, strong, nullable) CAShapeLayer *searchLayer;
 @property (nonatomic, strong) NSMutableArray<CATextLayer *> *subTextLayers;
 @property (nonatomic, strong) UILabel *indicator;
 @property (nonatomic, weak) UITableView *tableView;
@@ -65,7 +65,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     
     [CATransaction begin];
     [CATransaction setDisableActions:YES];
-    if (self.searchLayer) {
+    if (self.searchLayer && !self.searchLayer.hidden) {
         self.searchLayer.frame = CGRectMake(self.bounds.size.width - self.configuration.indexItemRightMargin - self.configuration.indexItemHeight, SCGetTextLayerCenterY(0, margin, space) - self.configuration.indexItemHeight / 2, self.configuration.indexItemHeight, self.configuration.indexItemHeight);
         self.searchLayer.cornerRadius = self.configuration.indexItemHeight / 2;
         self.searchLayer.contentsScale = UIScreen.mainScreen.scale;
@@ -94,12 +94,14 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     BOOL hasSearchLayer = [self.dataSource.firstObject isEqualToString:UITableViewIndexSearch];
     NSUInteger deta = 0;
     if (hasSearchLayer) {
-        self.searchLayer = [self createSearchLayer];
-        [self.layer addSublayer:self.searchLayer];
+        if (!self.searchLayer) {
+            self.searchLayer = [self createSearchLayer];
+            [self.layer addSublayer:self.searchLayer];
+        }
+        self.searchLayer.hidden = NO;
         deta = 1;
     } else if (self.searchLayer) {
-        [self.searchLayer removeFromSuperlayer];
-        self.searchLayer = nil;
+        self.searchLayer.hidden = YES;
     }
     
     NSInteger countDifference = self.dataSource.count - deta - self.subTextLayers.count;
