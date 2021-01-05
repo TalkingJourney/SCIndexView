@@ -62,8 +62,10 @@ static inline UIColor *SCGetColor(CGFloat red, CGFloat green, CGFloat blue, CGFl
                            indicatorCornerRadius:10
                         indexItemBackgroundColor:[UIColor clearColor]
                               indexItemTextColor:[UIColor darkGrayColor]
+                               indexItemTextFont:[UIFont fontWithName:@"Helvetica" size:12]
                 indexItemSelectedBackgroundColor:SCGetColor(40, 170, 40, 1)
                       indexItemSelectedTextColor:[UIColor whiteColor]
+                       indexItemSelectedTextFont:[UIFont fontWithName:@"Helvetica" size:12]
                                  indexItemHeight:15
                             indexItemRightMargin:5
                                  indexItemsSpace:0];
@@ -78,8 +80,10 @@ static inline UIColor *SCGetColor(CGFloat red, CGFloat green, CGFloat blue, CGFl
                           indicatorCornerRadius:(CGFloat)indicatorCornerRadius
                        indexItemBackgroundColor:(UIColor *)indexItemBackgroundColor
                              indexItemTextColor:(UIColor *)indexItemTextColor
+                              indexItemTextFont:(UIFont *)indexItemTextFont
                indexItemSelectedBackgroundColor:(UIColor *)indexItemSelectedBackgroundColor
                      indexItemSelectedTextColor:(UIColor *)indexItemSelectedTextColor
+                      indexItemSelectedTextFont:(UIFont *)indexItemSelectedTextFont
                                 indexItemHeight:(CGFloat)indexItemHeight
                            indexItemRightMargin:(CGFloat)indexItemRightMargin
                                 indexItemsSpace:(CGFloat)indexItemsSpace
@@ -97,8 +101,10 @@ static inline UIColor *SCGetColor(CGFloat red, CGFloat green, CGFloat blue, CGFl
     
     configuration.indexItemBackgroundColor = indexItemBackgroundColor;
     configuration.indexItemTextColor = indexItemTextColor;
+    configuration.indexItemTextFont = indexItemTextFont;
     configuration.indexItemSelectedBackgroundColor = indexItemSelectedBackgroundColor;
     configuration.indexItemSelectedTextColor = indexItemSelectedTextColor;
+    configuration.indexItemSelectedTextFont = indexItemSelectedTextFont;
     configuration.indexItemHeight = indexItemHeight;
     configuration.indexItemRightMargin = indexItemRightMargin;
     configuration.indexItemsSpace = indexItemsSpace;

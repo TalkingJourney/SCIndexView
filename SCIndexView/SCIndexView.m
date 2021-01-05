@@ -7,13 +7,13 @@
 
 static NSTimeInterval kAnimationDuration = 0.25;
 
-// 根据section值获取CATextLayer的中心点y值
+// 根据section值获取TextLayer的中心点y值
 static inline CGFloat SCGetTextLayerCenterY(NSUInteger position, CGFloat margin, CGFloat space)
 {
     return margin + (position + 1.0 / 2) * space;
 }
 
-// 根据y值获取CATextLayer的section值
+// 根据y值获取TextLayer的section值
 static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFloat space)
 {
     CGFloat position = (y - margin) / space - 1.0 / 2;
@@ -25,17 +25,48 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     return biggerCenterY + smallerCenterY > 2 * y ? smaller : bigger;
 }
 
+
+
+@interface SCTextLayer : CATextLayer
+
+@property (nonatomic, strong) UIFont *itemFont;
+
+@end
+
+@implementation SCTextLayer
+
+- (void)drawInContext:(CGContextRef)context {
+    CGFloat height = self.bounds.size.height;
+    CGFloat fontSize = self.itemFont.lineHeight;
+    CGFloat yOffset = (height - fontSize) / 2;
+    
+    CGContextSaveGState(context);
+    CGContextTranslateCTM(context, 0, yOffset);
+    [super drawInContext:context];
+    CGContextRestoreGState(context);
+}
+
+- (void)setItemFont:(UIFont *)itemFont {
+    _itemFont = itemFont;
+    self.font = (__bridge CFTypeRef _Nullable)(itemFont.fontName);
+    self.fontSize = itemFont.pointSize;
+}
+
+@end
+
+
+
 @interface SCIndexView ()
 
 @property (nonatomic, strong, nullable) CAShapeLayer *searchLayer;
-@property (nonatomic, strong) NSMutableArray<CATextLayer *> *subTextLayers;
+@property (nonatomic, strong) NSMutableArray<SCTextLayer *> *subTextLayers;
 @property (nonatomic, strong) UILabel *indicator;
 @property (nonatomic, weak) UITableView *tableView;
 
 // 触摸索引视图
 @property (nonatomic, assign, getter=isTouchingIndexView) BOOL touchingIndexView;
 
-/** 触感反馈 */
+// 触感反馈
 @property (nonatomic, strong) UIImpactFeedbackGenerator *generator NS_AVAILABLE_IOS(10_0);
 
 @end
@@ -74,7 +105,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     
     NSInteger deta = self.searchLayer ? 1 : 0;
     for (int i = 0; i < self.subTextLayers.count; i++) {
-        CATextLayer *textLayer = self.subTextLayers[i];
+        SCTextLayer *textLayer = self.subTextLayers[i];
         NSUInteger section = i + deta;
         textLayer.frame = CGRectMake(self.bounds.size.width - self.configuration.indexItemRightMargin - self.configuration.indexItemHeight, SCGetTextLayerCenterY(section, margin, space) - self.configuration.indexItemHeight / 2, self.configuration.indexItemHeight, self.configuration.indexItemHeight);
     }
@@ -107,13 +138,13 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     NSInteger countDifference = self.dataSource.count - deta - self.subTextLayers.count;
     if (countDifference > 0) {
         for (int i = 0; i < countDifference; i++) {
-            CATextLayer *textLayer = [CATextLayer layer];
+            SCTextLayer *textLayer = [SCTextLayer layer];
             [self.layer addSublayer:textLayer];
             [self.subTextLayers addObject:textLayer];
         }
     } else {
         for (int i = 0; i < -countDifference; i++) {
-            CATextLayer *textLayer = self.subTextLayers.lastObject;
+            SCTextLayer *textLayer = self.subTextLayers.lastObject;
             [textLayer removeFromSuperlayer];
             [self.subTextLayers removeObject:textLayer];
         }
@@ -133,11 +164,11 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
     }
     
     for (int i = 0; i < self.subTextLayers.count; i++) {
-        CATextLayer *textLayer = self.subTextLayers[i];
+        SCTextLayer *textLayer = self.subTextLayers[i];
         NSUInteger section = i + deta;
         textLayer.frame = CGRectMake(self.bounds.size.width - self.configuration.indexItemRightMargin - self.configuration.indexItemHeight, SCGetTextLayerCenterY(section, margin, space) - self.configuration.indexItemHeight / 2, self.configuration.indexItemHeight, self.configuration.indexItemHeight);
         textLayer.string = self.dataSource[section];
-        textLayer.fontSize = self.configuration.indexItemHeight * 0.8;
+        textLayer.itemFont = self.configuration.indexItemTextFont;
         textLayer.cornerRadius = self.configuration.indexItemHeight / 2;
         textLayer.alignmentMode = kCAAlignmentCenter;
         textLayer.contentsScale = UIScreen.mainScreen.scale;
@@ -290,7 +321,7 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
         return;
     }
     
-    CATextLayer *textLayer = self.subTextLayers[self.currentSection];
+    SCTextLayer *textLayer = self.subTextLayers[self.currentSection];
     if (self.configuration.indexViewStyle == SCIndexViewStyleDefault) {
         self.indicator.center = CGPointMake(self.bounds.size.width - self.indicator.bounds.size.width / 2 - self.configuration.indicatorRightMargin, textLayer.position.y);
     } else {
@@ -333,20 +364,24 @@ static inline NSInteger SCPositionOfTextLayerInY(CGFloat y, CGFloat margin, CGFl
 {
     if (self.currentSection < 0 || self.currentSection >= (NSInteger)self.subTextLayers.count) return;
     
-    CATextLayer *textLayer = self.subTextLayers[self.currentSection];
+    SCTextLayer *textLayer = self.subTextLayers[self.currentSection];
     UIColor *backgroundColor, *foregroundColor;
+    UIFont *font;
     if (selected) {
         backgroundColor = self.configuration.indexItemSelectedBackgroundColor;
         foregroundColor = self.configuration.indexItemSelectedTextColor;
+        font = self.configuration.indexItemSelectedTextFont;
     } else {
         backgroundColor = self.configuration.indexItemBackgroundColor;
         foregroundColor = self.configuration.indexItemTextColor;
+        font = self.configuration.indexItemTextFont;
     }
     
     [CATransaction begin];
     [CATransaction setDisableActions:YES];
     textLayer.backgroundColor = backgroundColor.CGColor;
     textLayer.foregroundColor = foregroundColor.CGColor;
+    textLayer.itemFont = font;
     [CATransaction commit];
 }
 

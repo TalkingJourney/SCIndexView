@@ -1,10 +1,3 @@
-//
-//  SCIndexViewHeaderView.h
-//  SCIndexViewDemo
-//
-//  Created by JMS on 2019/6/21.
-//  Copyright © 2019 SC. All rights reserved.
-//
 
 #import <UIKit/UIKit.h>
 
